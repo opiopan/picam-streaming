@@ -1,0 +1,12 @@
+[Unit]
+Description=Camera streaming data genaration service
+After=picam-env.service
+
+[Service]
+Type=simple
+ExecStart=/usr/share/picam-streaming/sbin/streaming
+Restart=always
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target

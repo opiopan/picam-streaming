@@ -1,0 +1,11 @@
+[Unit]
+Description=Camera streaming environment creator
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/share/picam-streaming/sbin/picam-init
+
+[Install]
+WantedBy=multi-user.target

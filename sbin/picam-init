@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rm -rf /run/picam-streaming
+mkdir /run/picam-streaming
+cp -R /usr/share/picam-streaming/html/* /run/picam-streaming/

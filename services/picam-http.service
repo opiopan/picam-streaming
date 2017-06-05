@@ -1,0 +1,12 @@
+[Unit]
+Description=Camera streaming http server
+After=picam-streaming.service
+
+[Service]
+Type=simple
+ExecStart=/usr/share/picam-streaming/sbin/picam-httpd
+Restart=always
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target

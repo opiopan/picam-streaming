@@ -1,0 +1,39 @@
+#!/bin/sh
+
+cd /run/picam-streaming
+
+SEGS=2
+
+(
+    THR=`expr $SEGS + 1`
+    while sleep 10;do
+	num=`ls segments/*.ts | wc -l`
+	if [ $num -gt $THR ];then
+	    deletee=`expr $num - $THR`
+	    target=`ls segments/*.ts | head -$deletee`
+	    rm $target
+	fi
+    done
+)&
+cleaner=$!
+
+cleanup(){
+    rm segments/stream.m3u8 segments/*.ts
+    kill $cleaner
+}
+
+trap "cleanup" 1 2 15
+
+raspivid -n -w 1080 -h 720 -fps 25 -vf -hf -t 0 -b 1800000 -ih -o - \
+| ffmpeg -y \
+    -i - \
+    -c:v copy \
+    -map 0:0 \
+    -f ssegment \
+    -segment_time 4 \
+    -segment_format mpegts \
+    -segment_list "segments/stream.m3u8" \
+    -segment_list_size $SEGS \
+    -segment_list_flags live \
+    -segment_list_type m3u8 \
+    "segments/%08d.ts" 2>/dev/null
